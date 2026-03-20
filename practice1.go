@@ -1,15 +1,34 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+	"os"
+)
 
 func main(){
 // var revenue, expense, taxRate  float64 
 
-revenue := getUserInput("Revenue: ")
-expense := getUserInput("Expense: ")
-taxRate := getUserInput("Tax Rate: ")
+revenue, err := getUserInput("Revenue: ")
+if err != nil{
+	fmt.Println(err)
+	return 
+}
+expense, err := getUserInput("Expense: ")
+if err != nil{
+	fmt.Println(err)
+	return
+}
+taxRate, err := getUserInput("Tax Rate: ")
+if err != nil{
+	fmt.Println(err)
+	return
+}
+
 
 earningBeforeTax, earningAfterTax, ratio := calculateFinancials(revenue, expense, taxRate)
+
+StoreCalculatedResult(earningBeforeTax, earningAfterTax, ratio)
 
 fmt.Print("Earning Before Tax/Profit: ")
 fmt.Printf("%.1f\n", earningBeforeTax)
@@ -32,9 +51,19 @@ func calculateFinancials(revenue, expense, taxRate float64)(float64, float64, fl
 return earningBeforeTax, earningAfterTax, ratio
 }
 
-func getUserInput(infoText string)float64{
+func getUserInput(infoText string)(float64, error){
 	var UserInput float64
 	fmt.Print(infoText)
 fmt.Scan(&UserInput)
-return UserInput
+if(UserInput <= 0){	
+	return 0, errors.New("Value Must be positif Numbers")
 }
+return UserInput, nil
+}
+
+func StoreCalculatedResult(beforeResult, afterResult, ratio float64){
+	resultText := fmt.Sprintf("Before Tax: %.1f\nAfter Tax: %.1f\nRatio: %.3f",beforeResult,afterResult,ratio )
+os.WriteFile("Result.txt",[]byte(resultText), 0644)
+}
+
+

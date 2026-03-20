@@ -1,0 +1,3 @@
+earning before tax:  800 
+earning after tax: 640 
+rasio:  1.25
